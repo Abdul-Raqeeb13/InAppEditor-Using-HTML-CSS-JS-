@@ -242,6 +242,9 @@ body {
   position: absolute;
   pointer-events: none;
 }
+.svg-shape path {
+  pointer-events: visiblePainted; /* Only painted area is clickable */
+}
 
 .svg-shape.editable {
   pointer-events: all;

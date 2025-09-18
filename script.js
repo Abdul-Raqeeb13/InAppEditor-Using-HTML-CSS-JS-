@@ -67,13 +67,28 @@ class TemplateEditor {
 
     // Background style controls
     document.getElementById("bgColor").addEventListener("input", (e) => {
+      if (!this.selectedElement) {
+        // No element → canvas background
+        this.updateCanvasBackground(e.target.value);
+        return;
+      }
+
+      const type = this.selectedElement.getAttribute("data-type");
+
       if (
-        this.selectedElement &&
-        this.selectedElement.getAttribute("data-type") === "button"
+        type === "button" ||
+        type === "shape" ||
+        type === "text" ||
+        type === "div"
       ) {
-        this.updateStyle("backgroundColor", e.target.value); // button bg
+        // ✅ Allow buttons, shapes, text blocks, or generic divs
+        this.updateStyle("backgroundColor", e.target.value);
+      } else if (type === "svg") {
+        // ❌ Skip svg background, svg uses fill only
+        return;
       } else {
-        this.updateCanvasBackground(e.target.value); // canvas bg
+        // Default fallback → canvas background
+        this.updateCanvasBackground(e.target.value);
       }
     });
 
@@ -154,6 +169,24 @@ class TemplateEditor {
     document
       .getElementById("alignCenter")
       .addEventListener("click", () => this.updateStyle("textAlign", "center"));
+
+    // text shadow controls
+    // Inside setupEventListeners()
+    ["textShadowColor", "textShadowBlur", "textShadowX", "textShadowY"].forEach(
+      (id) => {
+        document.getElementById(id).addEventListener("input", () => {
+          this.updateTextShadow();
+        });
+      }
+    );
+
+    ["boxShadowColor", "boxShadowBlur", "boxShadowX", "boxShadowY"].forEach(
+      (id) => {
+        document.getElementById(id).addEventListener("input", () => {
+          this.updateBoxShadow();
+        });
+      }
+    );
 
     // Position and size controls
     document
@@ -269,16 +302,38 @@ class TemplateEditor {
         document
           .getElementById("typographyControls")
           .classList.remove("hidden");
+
+        // 👇 also allow background for text
+        document
+          .getElementById("backgroundControls")
+          .classList.remove("hidden");
         break;
 
       case "button":
-        // Show text controls
         this.showControlGroup("textControls");
         document
           .getElementById("typographyControls")
           .classList.remove("hidden");
 
-        // 👇 Also show background controls
+        // 👇 buttons get background too
+        document
+          .getElementById("backgroundControls")
+          .classList.remove("hidden");
+        break;
+
+      case "shape":
+        this.showControlGroup("shapeControls");
+
+        // 👇 shapes also can change background
+        document
+          .getElementById("backgroundControls")
+          .classList.remove("hidden");
+        break;
+
+      case "div": // if you tag divs as data-type="div"
+        this.showControlGroup("generalControls");
+
+        // 👇 also allow background control
         document
           .getElementById("backgroundControls")
           .classList.remove("hidden");
@@ -286,10 +341,6 @@ class TemplateEditor {
 
       case "svg":
         this.showControlGroup("svgControls");
-        break;
-
-      case "shape":
-        this.showControlGroup("shapeControls");
         break;
 
       case "image":
@@ -523,7 +574,6 @@ class TemplateEditor {
     const computedStyle = getComputedStyle(this.selectedElement);
     const elementStyle = this.selectedElement.style;
 
-    // Update color controls based on element type
     const elementType = this.selectedElement.getAttribute("data-type");
 
     if (
@@ -531,18 +581,80 @@ class TemplateEditor {
       elementType === "logo" ||
       elementType === "button"
     ) {
-      if (elementStyle.color) {
+      const target =
+        elementType === "button" ? this.selectedElement : this.selectedElement;
+
+      if (target.style.color) {
         document.getElementById("textColor").value = this.rgbToHex(
-          elementStyle.color
+          target.style.color
         );
-      } else if (elementType === "button") {
-        if (elementStyle.backgroundColor) {
-          document.getElementById("bgColor").value = this.rgbToHex(
-            elementStyle.backgroundColor
-          );
-        }
+      } else if (elementType === "button" && elementStyle.backgroundColor) {
+        document.getElementById("bgColor").value = this.rgbToHex(
+          elementStyle.backgroundColor
+        );
       }
-    } else if (elementType === "svg") {
+
+      // 🔹 Update text shadow controls
+
+      const shadow = getComputedStyle(target).textShadow;
+      if (shadow && shadow !== "none") {
+        const parts = shadow.match(/(-?\d+)px\s+(-?\d+)px\s+(\d+)px\s+(.*)/);
+        if (parts) {
+          document.getElementById("textShadowX").value = parseInt(parts[1]);
+          document.getElementById("textShadowY").value = parseInt(parts[2]);
+          document.getElementById("textShadowBlur").value = parseInt(parts[3]);
+          document.getElementById("textShadowColor").value = this.rgbToHex(
+            parts[4]
+          );
+
+          document.getElementById("textShadowXValue").textContent =
+            parts[1] + "px";
+          document.getElementById("textShadowYValue").textContent =
+            parts[2] + "px";
+          document.getElementById("textShadowBlurValue").textContent =
+            parts[3] + "px";
+        }
+      } else {
+        // Reset
+        document.getElementById("textShadowX").value = 0;
+        document.getElementById("textShadowY").value = 0;
+        document.getElementById("textShadowBlur").value = 0;
+        document.getElementById("textShadowColor").value = "#000000";
+        document.getElementById("textShadowXValue").textContent = "0px";
+        document.getElementById("textShadowYValue").textContent = "0px";
+        document.getElementById("textShadowBlurValue").textContent = "0px";
+      }
+    }
+
+    // Update box shadow controls
+    const boxShadow = getComputedStyle(this.selectedElement).boxShadow;
+    if (boxShadow && boxShadow !== "none") {
+      const parts = boxShadow.match(/(-?\d+)px\s+(-?\d+)px\s+(\d+)px\s+(.*)/);
+      if (parts) {
+        document.getElementById("boxShadowX").value = parseInt(parts[1]);
+        document.getElementById("boxShadowY").value = parseInt(parts[2]);
+        document.getElementById("boxShadowBlur").value = parseInt(parts[3]);
+        document.getElementById("boxShadowColor").value = this.rgbToHex(
+          parts[4]
+        );
+
+        document.getElementById("boxShadowXValue").textContent =
+          parts[1] + "px";
+        document.getElementById("boxShadowYValue").textContent =
+          parts[2] + "px";
+        document.getElementById("boxShadowBlurValue").textContent =
+          parts[3] + "px";
+      }
+    } else {
+      // Reset defaults
+      document.getElementById("boxShadowX").value = 0;
+      document.getElementById("boxShadowY").value = 0;
+      document.getElementById("boxShadowBlur").value = 0;
+      document.getElementById("boxShadowColor").value = "#000000";
+    }
+
+    // other element updates...
+    if (elementType === "svg") {
       const path = this.selectedElement.querySelector("path");
       if (path) {
         const fillColor = path.getAttribute("fill") || "#3259E8";
@@ -560,42 +672,34 @@ class TemplateEditor {
       }
     }
 
-    // Update typography controls for text elements
-    if (
-      elementType === "text" ||
-      elementType === "logo" ||
-      elementType === "button"
-    ) {
-      const fontSize = parseInt(computedStyle.fontSize);
-      if (fontSize) {
-        document.getElementById("fontSize").value = fontSize;
-        document.getElementById("fontSizeValue").textContent = fontSize + "px";
-      }
-
-      const fontWeight = computedStyle.fontWeight;
-      if (fontWeight && !isNaN(fontWeight)) {
-        document.getElementById("fontWeight").value = fontWeight;
-        document.getElementById("fontWeightValue").textContent = fontWeight;
-      }
-
-      // Update button states
-      document
-        .getElementById("italicBtn")
-        .classList.toggle("active", computedStyle.fontStyle === "italic");
-      document
-        .getElementById("underlineBtn")
-        .classList.toggle(
-          "active",
-          computedStyle.textDecoration.includes("underline")
-        );
+    // General typography updates...
+    const fontSize = parseInt(computedStyle.fontSize);
+    if (fontSize) {
+      document.getElementById("fontSize").value = fontSize;
+      document.getElementById("fontSizeValue").textContent = fontSize + "px";
     }
+
+    const fontWeight = computedStyle.fontWeight;
+    if (fontWeight && !isNaN(fontWeight)) {
+      document.getElementById("fontWeight").value = fontWeight;
+      document.getElementById("fontWeightValue").textContent = fontWeight;
+    }
+
+    document
+      .getElementById("italicBtn")
+      .classList.toggle("active", computedStyle.fontStyle === "italic");
+    document
+      .getElementById("underlineBtn")
+      .classList.toggle(
+        "active",
+        computedStyle.textDecoration.includes("underline")
+      );
 
     // Update general opacity
     const opacity = parseFloat(elementStyle.opacity || 1) * 100;
     document.getElementById("opacity").value = opacity;
     document.getElementById("opacityValue").textContent = opacity + "%";
 
-    // Update position and size inputs
     this.updatePositionInputs();
     this.updateSizeInputs();
 
@@ -938,6 +1042,51 @@ class TemplateEditor {
         })
         .join("")
     );
+  }
+
+  // updated text shadow
+  updateTextShadow() {
+    if (
+      !this.selectedElement ||
+      !["text", "logo", "button"].includes(
+        this.selectedElement.getAttribute("data-type")
+      )
+    ) {
+      return;
+    }
+
+    const color = document.getElementById("textShadowColor").value;
+    const blur = document.getElementById("textShadowBlur").value;
+    const offsetX = document.getElementById("textShadowX").value;
+    const offsetY = document.getElementById("textShadowY").value;
+
+    // Live labels
+    document.getElementById("textShadowBlurValue").textContent = blur + "px";
+    document.getElementById("textShadowXValue").textContent = offsetX + "px";
+    document.getElementById("textShadowYValue").textContent = offsetY + "px";
+
+    // ✅ Apply shadow to the element itself (works for <button> text too)
+    this.selectedElement.style.textShadow = `${offsetX}px ${offsetY}px ${blur}px ${color}`;
+
+    this.saveState();
+  }
+
+  // updatebox shdaoe
+  updateBoxShadow() {
+    if (!this.selectedElement) return;
+
+    const x = document.getElementById("boxShadowX").value || 0;
+    const y = document.getElementById("boxShadowY").value || 0;
+    const blur = document.getElementById("boxShadowBlur").value || 0;
+    const color = document.getElementById("boxShadowColor").value || "#000000";
+
+    this.selectedElement.style.boxShadow = `${x}px ${y}px ${blur}px ${color}`;
+
+    document.getElementById("boxShadowXValue").textContent = `${x}px`;
+    document.getElementById("boxShadowYValue").textContent = `${y}px`;
+    document.getElementById("boxShadowBlurValue").textContent = `${blur}px`;
+
+    this.saveState();
   }
 
   // History Management

@@ -27,6 +27,7 @@
               <i class="fas fa-square"></i> Shape
             </button>
           </div>
+
           <div class="tool-row">
             <div class="file-input-wrapper">
               <input type="file" id="addImage" accept="image/*" />
@@ -37,6 +38,108 @@
                 <i class="fas fa-image"></i> Image
               </button>
             </div>
+          </div>
+
+          <!-- Text Shadow Controls -->
+          <div class="tool-row">
+            <label style="font-size: 12px; min-width: 80px"
+              >Text Shadow Color:</label
+            >
+            <input
+              type="color"
+              id="textShadowColor"
+              class="color-picker"
+              value="#000000"
+            />
+          </div>
+
+          <div class="tool-row">
+            <label style="font-size: 12px">Blur:</label>
+            <input
+              type="range"
+              id="textShadowBlur"
+              class="range-slider"
+              min="0"
+              max="30"
+              value="0"
+            />
+            <span class="range-value" id="textShadowBlurValue">0px</span>
+          </div>
+          <div class="tool-row">
+            <label style="font-size: 12px">X:</label>
+            <input
+              type="range"
+              id="textShadowX"
+              class="range-slider"
+              min="-50"
+              max="50"
+              value="0"
+            />
+            <span class="range-value" id="textShadowXValue">0px</span>
+          </div>
+          <div class="tool-row">
+            <label style="font-size: 12px">Y:</label>
+            <input
+              type="range"
+              id="textShadowY"
+              class="range-slider"
+              min="-50"
+              max="50"
+              value="0"
+            />
+            <span class="range-value" id="textShadowYValue">0px</span>
+          </div>
+
+          <!-- Box Shadow Controls -->
+          <div class="tool-row">
+            <label style="font-size: 12px; min-width: 80px"
+              >Box Shadow Color:</label
+            >
+            <input
+              type="color"
+              id="boxShadowColor"
+              class="color-picker"
+              value="#000000"
+            />
+          </div>
+
+          <div class="tool-row">
+            <label style="font-size: 12px">Blur:</label>
+            <input
+              type="range"
+              id="boxShadowBlur"
+              class="range-slider"
+              min="0"
+              max="50"
+              value="0"
+            />
+            <span class="range-value" id="boxShadowBlurValue">0px</span>
+          </div>
+
+          <div class="tool-row">
+            <label style="font-size: 12px">X:</label>
+            <input
+              type="range"
+              id="boxShadowX"
+              class="range-slider"
+              min="-50"
+              max="50"
+              value="0"
+            />
+            <span class="range-value" id="boxShadowXValue">0px</span>
+          </div>
+
+          <div class="tool-row">
+            <label style="font-size: 12px">Y:</label>
+            <input
+              type="range"
+              id="boxShadowY"
+              class="range-slider"
+              min="-50"
+              max="50"
+              value="0"
+            />
+            <span class="range-value" id="boxShadowYValue">0px</span>
           </div>
         </div>
 
