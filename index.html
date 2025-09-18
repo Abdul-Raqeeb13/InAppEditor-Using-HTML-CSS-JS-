@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Template Editor</title>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="editor-container">
+      <!-- Toolbar -->
+      <div class="toolbar">
+        <h3><i class="fas fa-tools"></i> Design Tools</h3>
+
+        <!-- Element Controls -->
+        <div class="tool-group">
+          <h4>Add Elements</h4>
+          <div class="tool-row">
+            <button class="tool-btn" id="addText">
+              <i class="fas fa-font"></i> Text
+            </button>
+            <button class="tool-btn" id="addShape">
+              <i class="fas fa-square"></i> Shape
+            </button>
+          </div>
+          <div class="tool-row">
+            <div class="file-input-wrapper">
+              <input type="file" id="addImage" accept="image/*" />
+              <button
+                class="tool-btn"
+                onclick="document.getElementById('addImage').click()"
+              >
+                <i class="fas fa-image"></i> Image
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Background Controls -->
+        <div class="tool-group" id="backgroundControls">
+          <h4>Background</h4>
+          <div class="tool-row">
+            <label style="font-size: 12px; min-width: 80px">Color:</label>
+            <input
+              type="color"
+              id="bgColor"
+              class="color-picker"
+              value="#000000"
+            />
+          </div>
+          <div class="tool-row">
+            <button class="tool-btn" id="gradientBtn">
+              <i class="fas fa-palette"></i> Gradient
+            </button>
+          </div>
+
+          <div class="gradient-controls" id="gradientControls">
+            <div class="gradient-stop">
+              <label>Color 1:</label>
+              <input
+                type="color"
+                id="gradColor1"
+                class="color-picker"
+                value="#3498db"
+              />
+            </div>
+            <div class="gradient-stop">
+              <label>Color 2:</label>
+              <input
+                type="color"
+                id="gradColor2"
+                class="color-picker"
+                value="#2ecc71"
+              />
+            </div>
+            <div class="tool-row">
+              <select id="gradDirection" class="tool-select">
+                <option value="45deg">Diagonal ↗</option>
+                <option value="90deg">Vertical ↑</option>
+                <option value="0deg">Horizontal →</option>
+                <option value="135deg">Diagonal ↖</option>
+                <option value="radial">Radial</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Text Controls -->
+        <div class="tool-group hidden" id="textControls">
+          <h4>Text Styling</h4>
+          <div class="tool-row">
+            <label style="font-size: 12px; min-width: 80px">Text Color:</label>
+            <input
+              type="color"
+              id="textColor"
+              class="color-picker"
+              value="#ffffff"
+            />
+          </div>
+        </div>
+
+        <!-- SVG Controls -->
+        <div class="tool-group hidden" id="svgControls">
+          <h4>SVG Styling</h4>
+          <div class="tool-row">
+            <label style="font-size: 12px; min-width: 80px">Fill Color:</label>
+            <input
+              type="color"
+              id="svgFillColor"
+              class="color-picker"
+              value="#3259E8"
+            />
+          </div>
+          <div class="tool-row">
+            <label style="font-size: 12px">Opacity:</label>
+            <input
+              type="range"
+              id="svgOpacity"
+              class="range-slider"
+              min="0"
+              max="100"
+              value="100"
+            />
+            <span class="range-value" id="svgOpacityValue">100%</span>
+          </div>
+        </div>
+
+        <!-- Shape Controls -->
+        <div class="tool-group hidden" id="shapeControls">
+          <h4>Shape Styling</h4>
+          <div class="tool-row">
+            <label style="font-size: 12px; min-width: 80px">Fill Color:</label>
+            <input
+              type="color"
+              id="shapeColor"
+              class="color-picker"
+              value="#3498db"
+            />
+          </div>
+          <div class="tool-row">
+            <label style="font-size: 12px">Border Radius:</label>
+            <input
+              type="range"
+              id="borderRadius"
+              class="range-slider"
+              min="0"
+              max="50"
+              value="0"
+            />
+            <span class="range-value" id="borderRadiusValue">0px</span>
+          </div>
+        </div>
+
+        <!-- General Controls -->
+        <div class="tool-group hidden" id="generalControls">
+          <h4>General</h4>
+          <div class="tool-row">
+            <label style="font-size: 12px">Opacity:</label>
+            <input
+              type="range"
+              id="opacity"
+              class="range-slider"
+              min="0"
+              max="100"
+              value="100"
+            />
+            <span class="range-value" id="opacityValue">100%</span>
+          </div>
+        </div>
+
+        <!-- Typography Controls -->
+        <div class="tool-group hidden" id="typographyControls">
+          <h4>Typography</h4>
+          <div class="font-controls show">
+            <div class="tool-row">
+              <select id="fontFamily" class="tool-select">
+                <option value="Arial, sans-serif">Arial</option>
+                <option value="Georgia, serif">Georgia</option>
+                <option value="Times New Roman, serif">Times</option>
+                <option value="Helvetica, sans-serif">Helvetica</option>
+                <option value="Verdana, sans-serif">Verdana</option>
+                <option value="'Roboto', sans-serif">Roboto</option>
+                <option value="'Open Sans', sans-serif">Open Sans</option>
+              </select>
+            </div>
+            <div class="tool-row">
+              <label style="font-size: 12px">Size:</label>
+              <input
+                type="range"
+                id="fontSize"
+                class="range-slider"
+                min="8"
+                max="120"
+                value="16"
+              />
+              <span class="range-value" id="fontSizeValue">16px</span>
+            </div>
+            <div class="tool-row">
+              <label style="font-size: 12px">Weight:</label>
+              <input
+                type="range"
+                id="fontWeight"
+                class="range-slider"
+                min="100"
+                max="900"
+                step="100"
+                value="400"
+              />
+              <span class="range-value" id="fontWeightValue">400</span>
+            </div>
+            <div class="tool-row">
+              <button class="tool-btn" id="italicBtn">
+                <i class="fas fa-italic"></i>
+              </button>
+              <button class="tool-btn" id="underlineBtn">
+                <i class="fas fa-underline"></i>
+              </button>
+              <button class="tool-btn" id="alignLeft">
+                <i class="fas fa-align-left"></i>
+              </button>
+              <button class="tool-btn" id="alignCenter">
+                <i class="fas fa-align-center"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Position & Size -->
+        <div class="tool-group hidden" id="positionControls">
+          <h4>Position & Size</h4>
+          <div class="tool-row">
+            <label style="font-size: 12px; min-width: 20px">X:</label>
+            <input
+              type="number"
+              id="posX"
+              class="tool-input"
+              style="width: 70px"
+              value="0"
+            />
+            <label style="font-size: 12px; min-width: 20px">Y:</label>
+            <input
+              type="number"
+              id="posY"
+              class="tool-input"
+              style="width: 70px"
+              value="0"
+            />
+          </div>
+          <div class="tool-row">
+            <label style="font-size: 12px; min-width: 20px">W:</label>
+            <input
+              type="number"
+              id="width"
+              class="tool-input"
+              style="width: 70px"
+              value="100"
+            />
+            <label style="font-size: 12px; min-width: 20px">H:</label>
+            <input
+              type="number"
+              id="height"
+              class="tool-input"
+              style="width: 70px"
+              value="100"
+            />
+          </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="tool-group">
+          <h4>Actions</h4>
+          <div class="tool-row">
+            <button class="tool-btn" id="duplicateBtn">
+              <i class="fas fa-copy"></i> Copy
+            </button>
+            <button class="tool-btn" id="deleteBtn">
+              <i class="fas fa-trash"></i> Delete
+            </button>
+          </div>
+          <div class="tool-row">
+            <button class="tool-btn" id="bringForward">
+              <i class="fas fa-arrow-up"></i> Forward
+            </button>
+            <button class="tool-btn" id="sendBackward">
+              <i class="fas fa-arrow-down"></i> Back
+            </button>
+          </div>
+          <div class="tool-row">
+            <button class="tool-btn" id="undoBtn">
+              <i class="fas fa-undo"></i> Undo
+            </button>
+            <button class="tool-btn" id="redoBtn">
+              <i class="fas fa-redo"></i> Redo
+            </button>
+          </div>
+        </div>
+
+        <!-- Export/Import -->
+        <div class="tool-group">
+          <h4>File</h4>
+          <div class="tool-row">
+            <button class="tool-btn" id="exportBtn">
+              <i class="fas fa-download"></i> Export
+            </button>
+            <div class="file-input-wrapper">
+              <input type="file" id="importFile" accept=".json" />
+              <button
+                class="tool-btn"
+                onclick="document.getElementById('importFile').click()"
+              >
+                <i class="fas fa-upload"></i> Import
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Canvas Area -->
+      <div class="canvas-area">
+        <div class="canvas" id="canvas">
+          <!-- Background Image -->
+          <div
+            class="background-image editable"
+            data-type="image"
+            data-element="background"
+          >
+            <img
+              src="https://t4.ftcdn.net/jpg/16/06/84/33/360_F_1606843327_juq8muoS3lDXg1Tk1iwdqL0KOYQuwFno.jpg"
+              alt="Background"
+            />
+          </div>
+
+          <!-- Blue Geometric Shapes -->
+          <svg
+            class="svg-shape editable"
+            data-type="svg"
+            data-element="shape1"
+            style="position: absolute; top: 0; right: 0; z-index: 1"
+            width="755"
+            height="867"
+            viewBox="0 0 735 767"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              opacity="0.8"
+              d="M949.216 766.671L0.188023 -329.29L1423.83 -603.192L949.216 766.671Z"
+              fill="#3259E8"
+            />
+          </svg>
+
+          <svg
+            class="svg-shape editable"
+            data-type="svg"
+            data-element="shape2"
+            style="position: absolute; top: -10px; right: 0; z-index: 2"
+            width="755"
+            height="807"
+            viewBox="0 0 735 767"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              opacity="1"
+              d="M949.216 766.671L0.188023 -329.29L1423.83 -603.192L949.216 766.671Z"
+              fill="#3259E8"
+            />
+          </svg>
+
+          <svg
+            class="svg-shape editable"
+            data-type="svg"
+            data-element="shape3"
+            style="position: absolute; bottom: 0; left: 0; z-index: 1"
+            width="921"
+            height="993"
+            viewBox="0 0 921 993"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              opacity="0.8"
+              d="M-26.8858 0.234121L920.937 1097.24L-503.006 1369.57L-26.8858 0.234121Z"
+              fill="#3259E8"
+            />
+          </svg>
+
+          <svg
+            class="svg-shape editable"
+            data-type="svg"
+            data-element="shape4"
+            style="position: absolute; bottom: -10px; left: -100px; z-index: 2"
+            width="921"
+            height="1093"
+            viewBox="0 0 921 993"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              opacity="1"
+              d="M-26.8858 0.234121L920.937 1097.24L-503.006 1369.57L-26.8858 0.234121Z"
+              fill="#3259E8"
+            />
+          </svg>
+
+          <!-- Content Container -->
+          <div class="content-container">
+            <!-- Logo -->
+            <div
+              class="logo-container editable text-element"
+              data-type="logo"
+              data-element="logo"
+              contenteditable="true"
+            >
+              <img
+                class="logo-image"
+                src="https://img.freepik.com/free-vector/bird-colorful-logo-gradient-vector_343694-1365.jpg?semt=ais_incoming&w=740&q=80"
+                alt=""
+                srcset=""
+              />
+              <!-- <div class="logo-image">LOGO</div> -->
+              <!-- <span style="color: #ffffff">LOGO HERE</span> -->
+            </div>
+
+            <!-- Main Title -->
+            <div
+              class="main-title editable text-element"
+              data-type="text"
+              data-element="title"
+              contenteditable="true"
+            >
+              UPGRADE YOUR SKILLS
+            </div>
+
+            <!-- Subtitle -->
+            <div
+              class="subtitle editable text-element"
+              data-type="text"
+              data-element="subtitle"
+              contenteditable="true"
+            >
+              Master Social Media Marketing In 60 Minutes
+            </div>
+
+            <!-- CTA Button -->
+            <button
+              class="cta-button editable text-element"
+              data-type="button"
+              data-element="cta"
+              contenteditable="true"
+            >
+              Reserve Seat
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Layers Panel -->
+      <div class="layers-panel">
+        <h3><i class="fas fa-layer-group"></i> Layers</h3>
+        <div id="layersList"></div>
+      </div>
+    </div>
+
+    <!-- Context Menu -->
+    <div class="context-menu" id="contextMenu">
+      <div class="context-menu-item" id="editText">
+        <i class="fas fa-edit"></i> Edit Text
+      </div>
+      <div class="context-menu-item" id="duplicate">
+        <i class="fas fa-copy"></i> Duplicate
+      </div>
+      <div class="context-menu-item" id="delete">
+        <i class="fas fa-trash"></i> Delete
+      </div>
+      <div class="context-menu-item" id="bringToFront">
+        <i class="fas fa-arrow-up"></i> Bring to Front
+      </div>
+      <div class="context-menu-item" id="sendToBack">
+        <i class="fas fa-arrow-down"></i> Send to Back
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>

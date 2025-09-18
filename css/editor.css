@@ -1,0 +1,31 @@
+body {
+  margin: 0;
+  display: flex;
+  font-family: sans-serif;
+}
+
+.editor-container {
+  display: flex;
+  width: 100vw;
+  height: 100vh;
+}
+
+.canvas {
+  flex: 3;
+  position: relative;
+  background: #111;
+  overflow: hidden;
+}
+
+.editable {
+  position: absolute;
+  cursor: move;
+  user-select: none;
+}
+
+.properties {
+  flex: 1;
+  background: #f5f5f5;
+  padding: 10px;
+  border-left: 1px solid #ccc;
+}

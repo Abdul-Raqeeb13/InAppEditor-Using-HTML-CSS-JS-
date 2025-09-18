@@ -1,0 +1,144 @@
+
+{
+  "type": "Stage",
+  "attrs": { "width": 1080, "height": 1920 },
+  "children": [
+    {
+      "type": "Layer",
+      "children": [
+        {
+          "type": "Image",
+          "attrs": {
+            "x": 0,
+            "y": 0,
+            "width": 1080,
+            "height": 1920,
+            "src": "bg.png",
+            "filters": ["Grayscale"]
+          }
+        },
+        {
+          "type": "Rect",
+          "attrs": {
+            "x": 0,
+            "y": 0,
+            "width": 1080,
+            "height": 1920,
+            "fill": "rgba(0,0,0,0.2)"
+          }
+        },
+        {
+          "type": "Path",
+          "attrs": {
+            "data": "M1080 758H0V0C135.866 129.47 327.563 210.146 540 210.146C752.437 210.146 944.134 129.47 1080 0V758Z",
+            "fill": "#3259E8",
+            "x": 0,
+            "y": 1920 - 758
+          }
+        },
+        {
+          "type": "Group",
+          "attrs": {
+            "x": 540,
+            "y": 60,
+            "offsetX": 0,
+            "align": "center"
+          },
+          "children": [
+            {
+              "type": "Image",
+              "attrs": {
+                "x": -100,
+                "y": 0,
+                "width": 53,
+                "height": 52,
+                "src": "logo.png"
+              }
+            },
+            {
+              "type": "Text",
+              "attrs": {
+                "x": -30,
+                "y": 0,
+                "text": "LOGO HERE",
+                "fontSize": 43.18,
+                "fontFamily": "Manrope",
+                "fontStyle": "500",
+                "fill": "#ffffff",
+                "shadowColor": "black",
+                "shadowBlur": 3,
+                "shadowOffset": { "x": 1, "y": 1 }
+              }
+            }
+          ]
+        },
+        {
+          "type": "Group",
+          "attrs": {
+            "x": 540,
+            "y": 1920 - 350,
+            "width": 1080,
+            "height": 350
+          },
+          "children": [
+            {
+              "type": "Text",
+              "attrs": {
+                "x": 0,
+                "y": -100,
+                "width": 945,
+                "align": "center",
+                "text": "Your Health Your Priority",
+                "fontSize": 72.48,
+                "fontFamily": "Manrope",
+                "fontStyle": "600",
+                "fill": "#ffffff"
+              }
+            },
+            {
+              "type": "Text",
+              "attrs": {
+                "x": 0,
+                "y": -20,
+                "width": 945,
+                "align": "center",
+                "text": "Learn easy-to-follow wellness routines, stress management strategies,\nand nutrition tips from certified Expert",
+                "fontSize": 33.34,
+                "fontFamily": "Manrope",
+                "fontStyle": "400",
+                "fill": "#ffffff",
+                "lineHeight": 1.3
+              }
+            },
+            {
+              "type": "Rect",
+              "attrs": {
+                "x": 302,
+                "y": 230,
+                "width": 476,
+                "height": 70,
+                "cornerRadius": 60,
+                "fill": "#ffffff"
+              }
+            },
+            {
+              "type": "Text",
+              "attrs": {
+                "x": 540,
+                "y": 245,
+                "text": "Save My Seat →",
+                "align": "center",
+                "width": 476,
+                "fontSize": 29.02,
+                "fontFamily": "Manrope",
+                "fontStyle": "600",
+                "fill": "#3259e8"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+
