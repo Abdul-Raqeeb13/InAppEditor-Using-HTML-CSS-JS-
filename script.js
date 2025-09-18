@@ -547,7 +547,17 @@ class TemplateEditor {
 
   updateStyle(property, value) {
     if (this.selectedElement && !this.isUpdating) {
-      this.selectedElement.style[property] = value;
+      if (
+        property === "borderRadius" &&
+        this.selectedElement.getAttribute("data-type") === "logo"
+      ) {
+        // apply to the image inside logo container
+        const img = this.selectedElement.querySelector("img");
+        if (img) img.style.borderRadius = value;
+        this.selectedElement.style.overflow = "hidden"; // clip the image
+      } else {
+        this.selectedElement.style[property] = value;
+      }
       this.saveState();
     }
   }
@@ -651,6 +661,19 @@ class TemplateEditor {
       document.getElementById("boxShadowY").value = 0;
       document.getElementById("boxShadowBlur").value = 0;
       document.getElementById("boxShadowColor").value = "#000000";
+    }
+
+    // 🔹 Border Radius sync
+    if (
+      elementType === "shape" ||
+      elementType === "div" ||
+      elementType === "button" ||
+      elementType === "image"
+    ) {
+      const borderRadius = parseInt(computedStyle.borderRadius) || 0;
+      document.getElementById("borderRadius").value = borderRadius;
+      document.getElementById("borderRadiusValue").textContent =
+        borderRadius + "px";
     }
 
     // other element updates...
