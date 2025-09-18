@@ -465,8 +465,8 @@ class TemplateEditor {
         const y = e.clientY - canvasRect.top - this.dragOffset.y;
 
         element.style.position = "absolute";
-        element.style.left = Math.max(0, x) + "px";
-        element.style.top = Math.max(0, y) + "px";
+        element.style.left = x + "px";
+        element.style.top = y + "px";
 
         this.updatePositionInputs();
       }
