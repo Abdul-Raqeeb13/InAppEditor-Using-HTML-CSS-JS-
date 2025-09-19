@@ -142,6 +142,51 @@
             />
             <span class="range-value" id="boxShadowYValue">0px</span>
           </div>
+
+          <!-- Add these border controls to your HTML after the Box Shadow Controls section -->
+        </div>
+
+        <!-- Background Controls -->
+        <div class="tool-group" id="borderControls">
+          <!-- Border Controls -->
+          <div class="tool-row">
+            <label style="font-size: 12px; min-width: 80px"
+              >Border Color:</label
+            >
+            <input
+              type="color"
+              id="borderColor"
+              class="color-picker"
+              value="#000000"
+            />
+          </div>
+
+          <div class="tool-row">
+            <label style="font-size: 12px">Width:</label>
+            <input
+              type="range"
+              id="borderWidth"
+              class="range-slider"
+              min="0"
+              max="20"
+              value="0"
+            />
+            <span class="range-value" id="borderWidthValue">0px</span>
+          </div>
+
+          <div class="tool-row">
+            <label style="font-size: 12px">Style:</label>
+            <select id="borderStyle" class="tool-select">
+              <option value="solid">Solid</option>
+              <option value="dashed">Dashed</option>
+              <option value="dotted">Dotted</option>
+              <option value="double">Double</option>
+              <option value="groove">Groove</option>
+              <option value="ridge">Ridge</option>
+              <option value="inset">Inset</option>
+              <option value="outset">Outset</option>
+            </select>
+          </div>
         </div>
 
         <!-- Background Controls -->

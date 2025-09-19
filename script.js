@@ -34,6 +34,7 @@ class TemplateEditor {
       "generalControls",
       "typographyControls",
       "positionControls",
+      "borderControls",
     ];
     controlGroups.forEach((id) => {
       document.getElementById(id).classList.add("hidden");
@@ -171,7 +172,6 @@ class TemplateEditor {
       .addEventListener("click", () => this.updateStyle("textAlign", "center"));
 
     // text shadow controls
-    // Inside setupEventListeners()
     ["textShadowColor", "textShadowBlur", "textShadowX", "textShadowY"].forEach(
       (id) => {
         document.getElementById(id).addEventListener("input", () => {
@@ -180,6 +180,7 @@ class TemplateEditor {
       }
     );
 
+    // box shaodw controls
     ["boxShadowColor", "boxShadowBlur", "boxShadowX", "boxShadowY"].forEach(
       (id) => {
         document.getElementById(id).addEventListener("input", () => {
@@ -187,6 +188,16 @@ class TemplateEditor {
         });
       }
     );
+
+    // Border controls
+    ["borderColor", "borderWidth", "borderStyle"].forEach((id) => {
+      document.getElementById(id).addEventListener("input", () => {
+        this.updateBorder();
+      });
+      document.getElementById(id).addEventListener("change", () => {
+        this.updateBorder();
+      });
+    });
 
     // Position and size controls
     document
@@ -299,48 +310,57 @@ class TemplateEditor {
       case "text":
       case "logo":
         this.showControlGroup("textControls");
+        this.showControlGroup("borderControls");
         document
           .getElementById("typographyControls")
           .classList.remove("hidden");
-
-        // 👇 also allow background for text
         document
           .getElementById("backgroundControls")
           .classList.remove("hidden");
+        document.getElementById("borderControls").classList.remove("hidden");
+        // Show border controls for text elements
+        this.showBorderControlsForCurrentElement();
         break;
 
       case "button":
         this.showControlGroup("textControls");
+        this.showControlGroup("borderControls");
         document
           .getElementById("typographyControls")
           .classList.remove("hidden");
-
-        // 👇 buttons get background too
         document
           .getElementById("backgroundControls")
           .classList.remove("hidden");
+        document.getElementById("borderControls").classList.remove("hidden");
+        // Show border controls for buttons
+        this.showBorderControlsForCurrentElement();
         break;
 
       case "shape":
         this.showControlGroup("shapeControls");
-
-        // 👇 shapes also can change background
         document
           .getElementById("backgroundControls")
           .classList.remove("hidden");
+        document
+          .getElementById("backgroundControls")
+          .classList.remove("hidden");
+        // Show border controls for shapes
+        this.showBorderControlsForCurrentElement();
         break;
 
-      case "div": // if you tag divs as data-type="div"
+      case "div":
         this.showControlGroup("generalControls");
-
-        // 👇 also allow background control
         document
           .getElementById("backgroundControls")
           .classList.remove("hidden");
+        // Show border controls for divs
+        this.showBorderControlsForCurrentElement();
         break;
 
       case "svg":
         this.showControlGroup("svgControls");
+        // Show border controls for SVGs (will apply to paths)
+        this.showBorderControlsForCurrentElement();
         break;
 
       case "image":
@@ -348,11 +368,14 @@ class TemplateEditor {
           this.showControlGroup("backgroundControls");
         } else {
           this.showControlGroup("generalControls");
+          // Show border controls for images
+          this.showBorderControlsForCurrentElement();
         }
         break;
 
       default:
         this.showControlGroup("generalControls");
+        this.showBorderControlsForCurrentElement();
     }
   }
 
@@ -661,6 +684,51 @@ class TemplateEditor {
       document.getElementById("boxShadowY").value = 0;
       document.getElementById("boxShadowBlur").value = 0;
       document.getElementById("boxShadowColor").value = "#000000";
+    }
+
+    if (elementType === "logo") {
+      // For logo containers, check the img element's border
+      const img = this.selectedElement.querySelector("img");
+      if (img) {
+        const imgStyle = getComputedStyle(img);
+        const borderWidth = parseInt(imgStyle.borderWidth) || 0;
+        const borderColor = imgStyle.borderColor || "#000000";
+        const borderStyle = imgStyle.borderStyle || "solid";
+
+        document.getElementById("borderWidth").value = borderWidth;
+        document.getElementById("borderWidthValue").textContent =
+          borderWidth + "px";
+
+        if (
+          borderColor !== "rgba(0, 0, 0, 0)" &&
+          borderColor !== "transparent"
+        ) {
+          document.getElementById("borderColor").value =
+            this.rgbToHex(borderColor);
+        }
+
+        if (borderStyle !== "none") {
+          document.getElementById("borderStyle").value = borderStyle;
+        }
+      }
+    } else {
+      // For other elements, check CSS border properties
+      const borderWidth = parseInt(computedStyle.borderWidth) || 0;
+      const borderColor = computedStyle.borderColor || "#000000";
+      const borderStyle = computedStyle.borderStyle || "solid";
+
+      document.getElementById("borderWidth").value = borderWidth;
+      document.getElementById("borderWidthValue").textContent =
+        borderWidth + "px";
+
+      if (borderColor !== "rgba(0, 0, 0, 0)" && borderColor !== "transparent") {
+        document.getElementById("borderColor").value =
+          this.rgbToHex(borderColor);
+      }
+
+      if (borderStyle !== "none") {
+        document.getElementById("borderStyle").value = borderStyle;
+      }
     }
 
     // 🔹 Border Radius sync
@@ -1110,6 +1178,54 @@ class TemplateEditor {
     document.getElementById("boxShadowBlurValue").textContent = `${blur}px`;
 
     this.saveState();
+  }
+
+  // update border
+  updateBorder() {
+    if (!this.selectedElement) return;
+
+    const color = document.getElementById("borderColor").value;
+    const width = document.getElementById("borderWidth").value;
+    const style = document.getElementById("borderStyle").value;
+
+    // Update the range value display
+    document.getElementById("borderWidthValue").textContent = `${width}px`;
+
+    const elementType = this.selectedElement.getAttribute("data-type");
+
+    if (elementType === "logo") {
+      // For logo containers, apply border to the img element inside
+      const img = this.selectedElement.querySelector("img");
+      if (img) {
+        if (width > 0) {
+          img.style.border = `${width}px ${style} ${color}`;
+        } else {
+          img.style.border = "none";
+        }
+      }
+    } else {
+      // For all other elements, apply CSS border
+      if (width > 0) {
+        this.selectedElement.style.border = `${width}px ${style} ${color}`;
+      } else {
+        this.selectedElement.style.border = "none";
+      }
+    }
+
+    this.saveState();
+  }
+
+  getSVGStrokeDashArray(borderStyle) {
+    switch (borderStyle) {
+      case "dashed":
+        return "10,5";
+      case "dotted":
+        return "2,2";
+      case "double":
+        return "3,3,3,3"; // Approximate double line effect
+      default:
+        return "none";
+    }
   }
 
   // History Management
