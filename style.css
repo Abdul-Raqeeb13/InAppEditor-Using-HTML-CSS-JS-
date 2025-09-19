@@ -239,16 +239,16 @@ body {
 }
 
 .svg-shape {
-  position: absolute;
   pointer-events: none;
 }
 .svg-shape path {
   pointer-events: visiblePainted; /* Only painted area is clickable */
+  cursor: pointer;
 }
 
-.svg-shape.editable {
+/* .svg-shape.editable {
   pointer-events: all;
-}
+} */
 
 .content-container {
   position: absolute;
